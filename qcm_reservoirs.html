@@ -1,0 +1,156 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>QCM Réservoirs d'eau</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap">
+<style>
+/* Concept : colonne unique pensée pour le téléphone, fond bleu du cours, vert/rouge réservés au feedback. */
+:root{
+  --bg:#EAF4F8; --surface:#FFFFFF; --fg:#12263A; --muted:#566B7D; --line:#C9DCE6;
+  --brand:#0B3C5D; --accent:#0E7C9B; --orange:#F2A541;
+  --ok:#1E8E5A; --ok-bg:#DDF3E8; --ko:#C8433F; --ko-bg:#FBE3E2;
+  --display:Cambria,"Times New Roman",serif; --body:Lato,Calibri,Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0A2236; --surface:#12354F; --fg:#EAF4F8; --muted:#9DB6C7; --line:#285574;
+  --brand:#1CA7C7; --accent:#1CA7C7; --ok:#4CCB8D; --ok-bg:#12432F; --ko:#FF7A75; --ko-bg:#4A1F23; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0A2236; --surface:#12354F; --fg:#EAF4F8; --muted:#9DB6C7; --line:#285574;
+  --brand:#1CA7C7; --accent:#1CA7C7; --ok:#4CCB8D; --ok-bg:#12432F; --ko:#FF7A75; --ko-bg:#4A1F23; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.5;margin:0;
+  padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+main{max-width:640px;margin:0 auto}
+h1,h2{font-family:var(--display);margin:0;text-wrap:balance}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px}
+.hero{display:grid;gap:14px}
+.hero h1{font-size:clamp(28px,7vw,38px);line-height:1.15;color:var(--brand)}
+.hero p{margin:0;color:var(--muted)}
+ul.facts{margin:0;padding-left:18px;color:var(--muted)}
+.btn{font:700 16px var(--body);border:0;border-radius:10px;padding:14px 22px;background:var(--orange);color:#12263A;cursor:pointer;width:100%}
+.btn:focus-visible,.opt:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.btn.ghost{background:transparent;border:2px solid var(--accent);color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-size:14px;color:var(--muted)}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin-bottom:18px}
+.bar i{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.q{font-family:var(--display);font-size:clamp(20px,5vw,24px);line-height:1.3;margin:6px 0 18px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;font:400 16px/1.4 var(--body);color:var(--fg);
+  background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;width:100%}
+.opt b{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:13px;background:var(--bg);color:var(--brand)}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--fg)}
+.opt.ok b{background:var(--ok);color:#fff}
+.opt.ko{background:var(--ko-bg);border-color:var(--ko);color:var(--fg)}
+.opt.ko b{background:var(--ko);color:#fff}
+.fb{margin-top:16px;border-radius:12px;padding:14px 16px;font-size:15px}
+.fb strong{display:block;margin-bottom:2px;font-size:16px}
+.fb.ok{background:var(--ok-bg);border:1px solid var(--ok)}
+.fb.ok strong{color:var(--ok)}
+.fb.ko{background:var(--ko-bg);border:1px solid var(--ko)}
+.fb.ko strong{color:var(--ko)}
+.next{margin-top:16px}
+.score{display:grid;gap:14px;text-align:center}
+.big{font-family:var(--display);font-size:64px;line-height:1;color:var(--brand)}
+.big small{font-size:28px;color:var(--muted)}
+.verdict{font-size:18px;font-weight:700}
+.review{display:grid;gap:8px;text-align:left;margin:4px 0}
+.review div{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:8px 10px;border-radius:8px}
+.review .ok{background:var(--ok-bg)} .review .ko{background:var(--ko-bg)}
+.review span{flex:none;font-weight:700}
+.review .ok span{color:var(--ok)} .review .ko span{color:var(--ko)}
+.src{margin-top:18px;font-size:12px;color:var(--muted);text-align:center}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+
+</head><body><main id="app"></main>
+
+<script>
+var QS=[
+{q:"Quel est le rôle central du réservoir dans un réseau d'AEP ?",
+ o:["Absorber l'écart entre un débit d'adduction presque constant et une demande très variable","Traiter chimiquement l'eau avant la distribution","Augmenter le débit de la station de pompage","Mesurer la consommation de chaque abonné"],
+ a:0,e:"Le réservoir stocke l'eau et régule : l'adduction est presque constante alors que la distribution varie fortement."},
+{q:"Quelle fonction du réservoir est décrite comme le « baromètre du réseau » ?",
+ o:["Fonction économique","Point test","Élément de sécurité","Régulateur de pression"],
+ a:1,e:"Le point test renseigne sur le volume, la pression et la demande réelle du réseau."},
+{q:"Pour fixer l'altitude du réservoir, quelle cote retient-on et pourquoi ?",
+ o:["Le niveau maximal de l'eau, car le réservoir est plein","La cote du radier, car le réservoir est alors presque vide (cas le plus défavorable)","La cote du terrain naturel au point de départ","La cote de la toiture du réservoir"],
+ a:1,e:"On raisonne sur la cote du radier : réservoir presque vide, donc situation la plus défavorable."},
+{q:"Quelle relation donne la cote du radier ?",
+ o:["Cote du point défavorable − Hmin − pertes de charge","Cote du point défavorable + Hmin + pertes de charge","Cote du point défavorable × Hmin","Hmin + Qjmax"],
+ a:1,e:"Cote du radier ≈ cote du point défavorable + Hmin + pertes de charge."},
+{q:"Quelle est la surélévation maximale (HR) recommandée pour un château d'eau, pour des raisons économiques ?",
+ o:["10 m","25 m","40 m","80 m"],
+ a:2,e:"On évite de dépasser 40 m ; au-delà, on augmente les diamètres de quelques conduites pour réduire les pertes de charge."},
+{q:"Quel type de réservoir est le plus utilisé lorsque le relief le permet ?",
+ o:["Le château d'eau","Le réservoir semi-enterré","La citerne métallique sur pylône","Le bassin à ciel ouvert"],
+ a:1,e:"Le semi-enterré est toujours plus économique qu'un réservoir sur tour ; c'est le type le plus utilisé."},
+{q:"Dans la méthode graphique, comment calcule-t-on le volume minimum V0 ?",
+ o:["V0 = Max(Va − Vc) − Min(Va − Vc)","V0 = Va + Vc","V0 = |Min(Va − Vc)| + Max(Va − Vc)","V0 = Va × Vc"],
+ a:2,e:"V0 est la somme, en valeur absolue, du plus petit et du plus grand écart entre Va et Vc."},
+{q:"Sur l'exemple du cours, quelle conclusion tire-t-on de la comparaison adduction continue (≈ 42 %) et pompage de nuit (≈ 92 %) ?",
+ o:["Le régime d'alimentation n'a aucun effet sur la capacité","Plus l'alimentation s'écarte de la consommation, plus le réservoir doit être grand","Le pompage de nuit réduit toujours le volume du réservoir","Les deux régimes donnent le même V0"],
+ a:1,e:"Plus l'alimentation s'écarte de la consommation (pompage concentré la nuit), plus le réservoir doit être grand."},
+{q:"Quelle formule donne le volume total du réservoir ?",
+ o:["Vt = Vu + Vs + Vinc","Vt = Vu − Vs","Vt = Vu × Vinc","Vt = Vs + Vinc"],
+ a:0,e:"Vt = Vu + Vs + Vinc, avec Vs = 12 % (Vu + Vinc)."},
+{q:"Quelle est la réserve d'incendie minimale par réservoir ?",
+ o:["30 m³","60 m³","120 m³","500 m³"],
+ a:2,e:"120 m³ : une motopompe de 60 m³/h (17 l/s) pendant 2 h."},
+{q:"Quel matériau pour un réservoir de 15 000 m³ ?",
+ o:["Béton armé","Métal","Béton précontraint","Maçonnerie de pierre"],
+ a:2,e:"Béton armé jusqu'à 2 500 m³ ; béton précontraint jusqu'à 20 000 m³ pour les plus grands volumes."},
+{q:"À quoi sert le by-pass adduction-distribution ?",
+ o:["À augmenter la capacité du réservoir","À assurer la distribution pendant le nettoyage, l'entretien ou la réparation","À mesurer la pression","À fermer l'alimentation par flotteur"],
+ a:1,e:"Le by-pass relie adduction et distribution quand le réservoir est indisponible (nettoyage, entretien, réparation)."},
+{q:"Avec le calcul forfaitaire, quelle capacité utile pour une commune urbaine dont Qjmax = 4 000 m³/j ?",
+ o:["1 000 m³","2 000 m³","4 000 m³","8 000 m³"],
+ a:1,e:"Commune urbaine : 50 % de Qjmax, soit 50 % × 4 000 = 2 000 m³."},
+{q:"Pour l'adduction continue (méthode analytique), que vaut le débit horaire constant a ?",
+ o:["a = Qjmax / 10","a = Qjmax / 12","a = Qjmax / 24","a = 2,4 × Qjmax"],
+ a:2,e:"Adduction continue : débit horaire constant a = Qjmax / 24."},
+{q:"Pourquoi prévoit-on au moins deux cuves indépendantes ?",
+ o:["Pour réduire le coût de construction","Pour la sécurité de la distribution et la possibilité de nettoyage","Pour doubler la pression","Pour supprimer le trop-plein"],
+ a:1,e:"Au moins 2 cuves indépendantes : sécurité de la distribution et nettoyage possible."}
+];
+var LET="ABCD", app=document.getElementById('app');
+var order,i,score,answers;
+function shuffle(a){a=a.slice();for(var k=a.length-1;k>0;k--){var j=Math.floor(Math.random()*(k+1));var t=a[k];a[k]=a[j];a[j]=t}return a}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+function home(){
+  app.innerHTML='<div class="card hero"><div class="eyebrow">Cours d\'AEP · Chapitre 4</div><h1>QCM : Les réservoirs d\'eau potable</h1>'+
+  '<p>'+QS.length+' questions tirées uniquement du cours. Chaque réponse s\'affiche tout de suite en <b style="color:var(--ok)">vert</b> si elle est juste, en <b style="color:var(--ko)">rouge</b> si elle est fausse. Votre score apparaît à la fin.</p>'+
+  '<button class="btn" id="go">Commencer</button></div>';
+  document.getElementById('go').onclick=start;
+}
+function start(){order=shuffle(QS.map(function(_,k){return k}));i=0;score=0;answers=[];show()}
+function show(){
+  var Q=QS[order[i]], opts=shuffle(Q.o.map(function(t,k){return {t:t,c:k===Q.a}}));
+  var h='<div class="top"><span>Question '+(i+1)+' / '+QS.length+'</span><span>Score : '+score+'</span></div>'+
+   '<div class="bar"><i style="width:'+(i/QS.length*100)+'%"></i></div><div class="card"><div class="q">'+esc(Q.q)+'</div><div class="opts">';
+  opts.forEach(function(o,k){h+='<button class="opt" data-k="'+k+'"><b>'+LET[k]+'</b><span>'+esc(o.t)+'</span></button>'});
+  h+='</div><div id="fb"></div></div>';
+  app.innerHTML=h;
+  var btns=[].slice.call(app.querySelectorAll('.opt'));
+  btns.forEach(function(b){b.onclick=function(){
+    var k=+b.dataset.k, good=opts[k].c;
+    btns.forEach(function(x,n){x.disabled=true; if(opts[n].c)x.classList.add('ok')});
+    if(!good)b.classList.add('ko'); else score++;
+    answers.push({q:Q.q,ok:good});
+    var last=i===QS.length-1;
+    document.getElementById('fb').innerHTML='<div class="fb '+(good?'ok':'ko')+'"><strong>'+(good?'✓ Bonne réponse':'✗ Mauvaise réponse')+'</strong>'+esc(Q.e)+'</div>'+
+      '<div class="next"><button class="btn" id="nx">'+(last?'Voir mon score':'Question suivante')+'</button></div>';
+    var nx=document.getElementById('nx'); nx.focus();
+    nx.onclick=function(){i++; last?end():show()};
+  }});
+}
+function end(){
+  var n=QS.length,p=Math.round(score/n*100),
+  v=p>=80?'Excellent, vous maîtrisez le chapitre.':p>=50?'Bien, relisez les points manqués.':'À revoir : reprenez les diapositives du chapitre.';
+  var h='<div class="card score"><div class="eyebrow">Résultat final</div><div class="big">'+score+'<small> / '+n+'</small></div>'+
+   '<div class="verdict" style="color:var(--'+(p>=50?'ok':'ko')+')">'+p+' % · '+v+'</div><div class="review">';
+  answers.forEach(function(a,k){h+='<div class="'+(a.ok?'ok':'ko')+'"><span>'+(a.ok?'✓':'✗')+'</span><div style="padding:0;background:none">'+(k+1)+'. '+esc(a.q)+'</div></div>'});
+  h+='</div><button class="btn" id="re">Recommencer</button></div>';
+  app.innerHTML=h; document.getElementById('re').onclick=start; window.scrollTo(0,0);
+}
+home();
+</script></body></html>
